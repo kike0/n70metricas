@@ -1,0 +1,63 @@
+# Entorno virtual
+venv/
+env/
+.env
+
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Base de datos
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# Archivos de configuración sensibles
+config.ini
+.env
+secrets.json
+
+# Archivos temporales
+*.tmp
+*.temp
+.cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Reportes generados (opcional - puedes comentar si quieres incluirlos)
+# reports/*.pdf
+
+# Archivos de backup
+*.bak
+*.backup
+

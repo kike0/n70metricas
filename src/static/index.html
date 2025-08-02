@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Reportes de Redes Sociales</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2E86AB 0%, #A23B72 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #2E86AB;
+        }
+        
+        .section h2 {
+            color: #2E86AB;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2E86AB;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #2E86AB 0%, #A23B72 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 134, 171, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #2E86AB;
+        }
+        
+        .card h3 {
+            color: #2E86AB;
+            margin-bottom: 15px;
+        }
+        
+        .status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .status.active {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status.inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading.show {
+            display: block;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2E86AB;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .alert {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .alert.show {
+            display: block;
+        }
+        
+        .demo-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .demo-section h2 {
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .feature {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .feature h3 {
+            margin-bottom: 10px;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Sistema de Reportes de Redes Sociales</h1>
+            <p>Plataforma completa con integración de Apify para análisis automatizado</p>
+        </div>
+        
+        <div class="content">
+            <!-- Sección de demostración -->
+            <div class="demo-section">
+                <h2>🎯 Sistema Completamente Funcional</h2>
+                <p>Sistema desarrollado con integración completa de Apify para generar reportes automáticos como el que me mostraste</p>
+                
+                <div class="feature-list">
+                    <div class="feature">
+                        <h3>📊 Extracción de Datos</h3>
+                        <p>Facebook, Instagram, Twitter/X, TikTok, YouTube</p>
+                    </div>
+                    <div class="feature">
+                        <h3>📈 Análisis de Métricas</h3>
+                        <p>Engagement, crecimiento, interacciones</p>
+                    </div>
+                    <div class="feature">
+                        <h3>🎯 Anuncios Publicitarios</h3>
+                        <p>Facebook Ads Library integration</p>
+                    </div>
+                    <div class="feature">
+                        <h3>💭 Análisis de Sentimiento</h3>
+                        <p>Monitoreo de menciones y sentimiento</p>
+                    </div>
+                    <div class="feature">
+                        <h3>📄 Reportes PDF</h3>
+                        <p>Generación automática en formato profesional</p>
+                    </div>
+                    <div class="feature">
+                        <h3>⚡ API Completa</h3>
+                        <p>Backend robusto con Flask y base de datos</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Alertas -->
+            <div id="alert" class="alert"></div>
+            
+            <!-- Sección de Campañas -->
+            <div class="section">
+                <h2>📋 Gestión de Campañas</h2>
+                
+                <div class="form-group">
+                    <label for="campaignName">Nombre de la Campaña</label>
+                    <input type="text" id="campaignName" placeholder="Ej: Campaña Electoral 2024">
+                </div>
+                
+                <div class="form-group">
+                    <label for="campaignDescription">Descripción</label>
+                    <textarea id="campaignDescription" rows="3" placeholder="Descripción de la campaña..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reportFrequency">Frecuencia de Reportes</label>
+                    <select id="reportFrequency">
+                        <option value="daily">Diario</option>
+                        <option value="weekly" selected>Semanal</option>
+                        <option value="monthly">Mensual</option>
+                    </select>
+                </div>
+                
+                <button class="btn" onclick="createCampaign()">Crear Campaña</button>
+                <button class="btn btn-secondary" onclick="loadCampaigns()">Cargar Campañas</button>
+            </div>
+            
+            <!-- Lista de Campañas -->
+            <div class="section">
+                <h2>📊 Campañas Existentes</h2>
+                <div id="campaignsList" class="grid">
+                    <!-- Las campañas se cargarán aquí -->
+                </div>
+            </div>
+            
+            <!-- Sección de Perfiles -->
+            <div class="section">
+                <h2>👥 Añadir Perfil de Red Social</h2>
+                
+                <div class="form-group">
+                    <label for="profileCampaign">Campaña</label>
+                    <select id="profileCampaign">
+                        <option value="">Seleccionar campaña...</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="profileName">Nombre del Perfil</label>
+                    <input type="text" id="profileName" placeholder="Ej: Ismael Burgueño">
+                </div>
+                
+                <div class="form-group">
+                    <label for="profilePlatform">Plataforma</label>
+                    <select id="profilePlatform">
+                        <option value="facebook">Facebook</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="twitter">Twitter/X</option>
+                        <option value="tiktok">TikTok</option>
+                        <option value="youtube">YouTube</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="profileUsername">Username/URL</label>
+                    <input type="text" id="profileUsername" placeholder="Ej: @username o URL completa">
+                </div>
+                
+                <button class="btn" onclick="addProfile()">Añadir Perfil</button>
+            </div>
+            
+            <!-- Sección de Reportes -->
+            <div class="section">
+                <h2>📄 Generar Reportes</h2>
+                
+                <div class="form-group">
+                    <label for="reportCampaign">Campaña para Reporte</label>
+                    <select id="reportCampaign">
+                        <option value="">Seleccionar campaña...</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="startDate">Fecha de Inicio</label>
+                    <input type="date" id="startDate">
+                </div>
+                
+                <div class="form-group">
+                    <label for="endDate">Fecha de Fin</label>
+                    <input type="date" id="endDate">
+                </div>
+                
+                <button class="btn btn-success" onclick="generateReport()">Generar Reporte PDF</button>
+                <button class="btn" onclick="generateTestReport()">Generar Reporte de Prueba</button>
+            </div>
+            
+            <!-- Loading -->
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Procesando...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        
+        // Función para mostrar alertas
+        function showAlert(message, type = 'success') {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = `alert ${type} show`;
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, 5000);
+        }
+        
+        // Función para mostrar/ocultar loading
+        function toggleLoading(show = true) {
+            const loading = document.getElementById('loading');
+            loading.classList.toggle('show', show);
+        }
+        
+        // Crear campaña
+        async function createCampaign() {
+            const name = document.getElementById('campaignName').value;
+            const description = document.getElementById('campaignDescription').value;
+            const frequency = document.getElementById('reportFrequency').value;
+            
+            if (!name) {
+                showAlert('Por favor ingresa un nombre para la campaña', 'error');
+                return;
+            }
+            
+            toggleLoading(true);
+            
+            try {
+                const response = await fetch(`${API_BASE}/campaigns`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        description: description,
+                        report_frequency: frequency
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('Campaña creada exitosamente');
+                    document.getElementById('campaignName').value = '';
+                    document.getElementById('campaignDescription').value = '';
+                    loadCampaigns();
+                    loadCampaignOptions();
+                } else {
+                    showAlert(data.error || 'Error creando campaña', 'error');
+                }
+            } catch (error) {
+                showAlert('Error de conexión: ' + error.message, 'error');
+            } finally {
+                toggleLoading(false);
+            }
+        }
+        
+        // Cargar campañas
+        async function loadCampaigns() {
+            toggleLoading(true);
+            
+            try {
+                const response = await fetch(`${API_BASE}/campaigns`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayCampaigns(data.campaigns);
+                } else {
+                    showAlert(data.error || 'Error cargando campañas', 'error');
+                }
+            } catch (error) {
+                showAlert('Error de conexión: ' + error.message, 'error');
+            } finally {
+                toggleLoading(false);
+            }
+        }
+        
+        // Mostrar campañas
+        function displayCampaigns(campaigns) {
+            const container = document.getElementById('campaignsList');
+            
+            if (campaigns.length === 0) {
+                container.innerHTML = '<p>No hay campañas creadas aún.</p>';
+                return;
+            }
+            
+            container.innerHTML = campaigns.map(campaign => `
+                <div class="card">
+                    <h3>${campaign.name}</h3>
+                    <p>${campaign.description || 'Sin descripción'}</p>
+                    <p><strong>Frecuencia:</strong> ${campaign.report_frequency}</p>
+                    <p><strong>Perfiles:</strong> ${campaign.profiles_count}</p>
+                    <p><strong>Reportes:</strong> ${campaign.reports_count}</p>
+                    <span class="status ${campaign.is_active ? 'active' : 'inactive'}">
+                        ${campaign.is_active ? 'Activa' : 'Inactiva'}
+                    </span>
+                    <br><br>
+                    <button class="btn" onclick="scrapeAllProfiles(${campaign.id})">Extraer Datos</button>
+                </div>
+            `).join('');
+        }
+        
+        // Cargar opciones de campaña en selects
+        async function loadCampaignOptions() {
+            try {
+                const response = await fetch(`${API_BASE}/campaigns`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const profileSelect = document.getElementById('profileCampaign');
+                    const reportSelect = document.getElementById('reportCampaign');
+                    
+                    const options = data.campaigns.map(campaign => 
+                        `<option value="${campaign.id}">${campaign.name}</option>`
+                    ).join('');
+                    
+                    profileSelect.innerHTML = '<option value="">Seleccionar campaña...</option>' + options;
+                    reportSelect.innerHTML = '<option value="">Seleccionar campaña...</option>' + options;
+                }
+            } catch (error) {
+                console.error('Error cargando opciones de campaña:', error);
+            }
+        }
+        
+        // Añadir perfil
+        async function addProfile() {
+            const campaignId = document.getElementById('profileCampaign').value;
+            const name = document.getElementById('profileName').value;
+            const platform = document.getElementById('profilePlatform').value;
+            const username = document.getElementById('profileUsername').value;
+            
+            if (!campaignId || !name || !username) {
+                showAlert('Por favor completa todos los campos', 'error');
+                return;
+            }
+            
+            toggleLoading(true);
+            
+            try {
+                const response = await fetch(`${API_BASE}/campaigns/${campaignId}/profiles`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        platform: platform,
+                        username: username,
+                        profile_url: username.startsWith('http') ? username : `https://${platform}.com/${username}`
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('Perfil añadido exitosamente');
+                    document.getElementById('profileName').value = '';
+                    document.getElementById('profileUsername').value = '';
+                    loadCampaigns();
+                } else {
+                    showAlert(data.error || 'Error añadiendo perfil', 'error');
+                }
+            } catch (error) {
+                showAlert('Error de conexión: ' + error.message, 'error');
+            } finally {
+                toggleLoading(false);
+            }
+        }
+        
+        // Extraer datos de todos los perfiles
+        async function scrapeAllProfiles(campaignId) {
+            toggleLoading(true);
+            
+            try {
+                const response = await fetch(`${API_BASE}/campaigns/${campaignId}/scrape-all`, {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('Extracción de datos iniciada exitosamente');
+                } else {
+                    showAlert(data.error || 'Error en extracción de datos', 'error');
+                }
+            } catch (error) {
+                showAlert('Error de conexión: ' + error.message, 'error');
+            } finally {
+                toggleLoading(false);
+            }
+        }
+        
+        // Generar reporte
+        async function generateReport() {
+            const campaignId = document.getElementById('reportCampaign').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            if (!campaignId || !startDate || !endDate) {
+                showAlert('Por favor completa todos los campos', 'error');
+                return;
+            }
+            
+            toggleLoading(true);
+            
+            try {
+                const response = await fetch(`${API_BASE}/campaigns/${campaignId}/reports`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        start_date: startDate,
+                        end_date: endDate
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('Reporte generado exitosamente');
+                    // Aquí podrías abrir el PDF o mostrar un enlace de descarga
+                } else {
+                    showAlert(data.error || 'Error generando reporte', 'error');
+                }
+            } catch (error) {
+                showAlert('Error de conexión: ' + error.message, 'error');
+            } finally {
+                toggleLoading(false);
+            }
+        }
+        
+        // Generar reporte de prueba
+        async function generateTestReport() {
+            toggleLoading(true);
+            
+            try {
+                const response = await fetch(`${API_BASE}/test-report`, {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('Reporte de prueba generado exitosamente');
+                } else {
+                    showAlert(data.error || 'Error generando reporte de prueba', 'error');
+                }
+            } catch (error) {
+                showAlert('Error de conexión: ' + error.message, 'error');
+            } finally {
+                toggleLoading(false);
+            }
+        }
+        
+        // Cargar datos al iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCampaigns();
+            loadCampaignOptions();
+            
+            // Establecer fechas por defecto
+            const today = new Date();
+            const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+            
+            document.getElementById('endDate').value = today.toISOString().split('T')[0];
+            document.getElementById('startDate').value = lastMonth.toISOString().split('T')[0];
+        });
+    </script>
+</body>
+</html>
+
