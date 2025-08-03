@@ -1,0 +1,49 @@
+# Dockerfile Optimizado para Sistema de Reportes de Redes Sociales
+# Soluciona problemas de memoria durante la construcción
+
+# Usar imagen base más ligera
+FROM python:3.11-slim
+
+# Configurar variables de entorno
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Crear directorio de trabajo
+WORKDIR /app
+
+# Instalar dependencias del sistema de forma optimizada
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        gcc \
+        g++ \
+        libpq-dev \
+        libffi-dev \
+        libssl-dev \
+        curl \
+        && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Copiar solo requirements primero (para aprovechar cache de Docker)
+COPY requirements.txt .
+
+# Instalar dependencias Python de forma optimizada
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copiar el código de la aplicación
+COPY . .
+
+# Crear usuario no-root para seguridad
+RUN useradd --create-home --shell /bin/bash app && \
+    chown -R app:app /app
+USER app
+
+# Exponer puerto
+EXPOSE 5000
+
+# Comando de inicio optimizado
+CMD ["python", "src/main.py"]
+

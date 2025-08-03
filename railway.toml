@@ -1,0 +1,17 @@
+# Configuración para Railway
+# Optimizada para evitar problemas de memoria
+
+[build]
+builder = "dockerfile"
+dockerfilePath = "Dockerfile.optimized"
+
+[deploy]
+startCommand = "python src/main.py"
+healthcheckPath = "/health"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
+
+[env]
+PORT = "5000"
+

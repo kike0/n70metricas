@@ -1,0 +1,47 @@
+# Docker Compose para Sistema de Reportes de Redes Sociales
+# Configuración optimizada para producción
+
+version: '3.8'
+
+services:
+  web:
+    build: 
+      context: .
+      dockerfile: Dockerfile.optimized
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - APIFY_API_TOKEN=${APIFY_API_TOKEN}
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///app.db}
+    volumes:
+      - ./reports:/app/reports
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  # Base de datos PostgreSQL (opcional)
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=social_reports
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    profiles:
+      - with-db
+
+volumes:
+  postgres_data:
+

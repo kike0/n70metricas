@@ -1,0 +1,10 @@
+# Configuración para despliegue en Heroku
+# Usa Docker optimizado para evitar problemas de memoria
+
+build:
+  docker:
+    web: Dockerfile.optimized
+
+run:
+  web: python src/main.py
+

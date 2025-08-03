@@ -1,0 +1,26 @@
+# Requirements mínimos optimizados para despliegue
+# Evita problemas de memoria durante la instalación
+
+# Framework web
+Flask==2.3.3
+Flask-CORS==4.0.0
+
+# Base de datos
+SQLAlchemy==2.0.23
+
+# Cliente HTTP
+requests==2.31.0
+
+# Procesamiento de datos
+pandas==2.1.4
+
+# Generación de PDFs (ligero)
+reportlab==4.0.7
+
+# Utilidades
+python-dotenv==1.0.0
+Werkzeug==2.3.7
+
+# Servidor WSGI para producción
+gunicorn==21.2.0
+
